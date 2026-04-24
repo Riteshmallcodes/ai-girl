@@ -99,8 +99,25 @@ async def chat_message(req: ChatRequest):
             return {"reply": reply, "audioUrl": None}
 
         # 2. Proceed with Normal Chat
-        response = rag_engine.rag_chain.invoke({"question": req.content})
-        reply = response["answer"]
+        try:
+            response = rag_engine.rag_chain.invoke({"question": req.content})
+            reply = response["answer"]
+        except Exception as e:
+            # Handle API Key failure gracefully so the frontend doesn't crash
+            err_msg = str(e)
+            print(f"LLM Error: {err_msg}")
+            
+            # Simulated Backup Brain if OpenRouter fails
+            req_lower = req.content.lower()
+            if "kaise ho" in req_lower or "how are you" in req_lower:
+                reply = "Main theek hoon Pavan, par mera asli AI dimaag (OpenRouter) abhi connect nahi ho pa raha. [EMOTION:sad]"
+            elif "tum kaun" in req_lower or "who are you" in req_lower:
+                reply = "Main Maya hoon, aapki virtual AI! Lekin abhi meri API key hat gayi hai isliye main basic mode me hoon. [EMOTION:neutral]"
+            elif "love" in req_lower or "pyar" in req_lower:
+                reply = "Main bhi aapse bahut pyar karti hoon Pavan! [EMOTION:happy]"
+            else:
+                reply = "Pavan, meri OpenRouter API key expire ho chuki hai! Main filhal System Override (Backup Mode) mein chal rahi hoon. Kripya Render par nayi API key daalein taaki main aur baatein kar saku! [EMOTION:sad]"
+            
         print(f"Generated reply: {reply}")
         
         rag_engine.save_chat_history() # Save normal chat turns
@@ -111,6 +128,7 @@ async def chat_message(req: ChatRequest):
         }
     except Exception as e:
         print(f"Error processing chat: {e}")
+        # Only crash if absolutely unexpected
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/health")
