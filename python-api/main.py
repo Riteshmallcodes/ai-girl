@@ -6,7 +6,6 @@ import os
 import shutil
 import wikipedia
 import rag_engine
-from langchain.schema import HumanMessage
 
 # Copy the generated background to the frontend
 try:

@@ -3,14 +3,34 @@ import glob
 import json
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.schema import messages_from_dict, messages_to_dict
+from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+class SimpleMemory:
+    def __init__(self):
+        self.messages = []
+
+    def add_user_message(self, text):
+        self.messages.append({"role": "human", "content": text})
+        self._trim()
+
+    def add_ai_message(self, text):
+        self.messages.append({"role": "ai", "content": text})
+        self._trim()
+
+    def _trim(self):
+        if len(self.messages) > 20:
+            self.messages = self.messages[-20:]
+
+    def get_formatted_history(self):
+        res = ""
+        for m in self.messages:
+            prefix = "User" if m["role"] == "human" else "Maya"
+            res += f"{prefix}: {m['content']}\n"
+        return res
 
 def load_all_text():
     texts = []
@@ -69,13 +89,13 @@ def get_rag_chain(existing_memory=None):
     if existing_memory:
         memory = existing_memory
     else:
-        memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        memory = SimpleMemory()
         history_file = os.path.join(DATA_DIR, 'chat_history.json')
         if os.path.exists(history_file):
             try:
                 with open(history_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                memory.chat_memory.messages.extend(messages_from_dict(data))
+                memory.messages = data
             except:
                 pass
     
@@ -93,31 +113,31 @@ Knowledge & Memory:
 User: {{question}}
 Maya Option:"""
 
-    PROMPT = PromptTemplate(template=prompt_template, input_variables=["chat_history", "question"])
+    prompt = PromptTemplate.from_template(prompt_template)
+    
+    # Modern LCEL syntax to chain prompt and llm
+    lc_chain = prompt | llm
 
-    class CustomMemoryChain:
-        def __init__(self, llm, prompt, memory):
-            self.llm_chain = LLMChain(llm=llm, prompt=prompt)
-            self.memory = memory
+    class ModernChainWrapper:
+        def __init__(self, chain, mem):
+            self.chain = chain
+            self.memory = mem
             
         def invoke(self, inputs):
-            history_vars = self.memory.load_memory_variables({})
-            # Convert message objects to a readable string format for the prompt
-            chat_hist_str = ""
-            for msg in history_vars.get("chat_history", []):
-                prefix = "User" if msg.type == "human" else "Maya"
-                chat_hist_str += f"{prefix}: {msg.content}\n"
-                
-            res = self.llm_chain.invoke({
+            ch = self.memory.get_formatted_history()
+            res = self.chain.invoke({
                 "question": inputs["question"],
-                "chat_history": chat_hist_str
+                "chat_history": ch
             })
             
             # Save new context into memory
-            self.memory.save_context({"input": inputs["question"]}, {"output": res["text"]})
-            return {"answer": res["text"]}
+            self.memory.add_user_message(inputs["question"])
+            self.memory.add_ai_message(res.content)
+            
+            # Mock the format expected by main.py
+            return {"answer": res.content}
 
-    return CustomMemoryChain(llm, PROMPT, memory)
+    return ModernChainWrapper(lc_chain, memory)
 
 rag_chain = get_rag_chain()
 
@@ -130,9 +150,7 @@ def save_chat_history():
     global rag_chain
     if hasattr(rag_chain, 'memory') and rag_chain.memory:
         try:
-            messages = rag_chain.memory.chat_memory.messages
-            history_dict = messages_to_dict(messages)
             with open(os.path.join(DATA_DIR, 'chat_history.json'), 'w', encoding='utf-8') as f:
-                json.dump(history_dict, f, ensure_ascii=False, indent=2)
+                json.dump(rag_chain.memory.messages, f, ensure_ascii=False, indent=2)
         except:
             pass
