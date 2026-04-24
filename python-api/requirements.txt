@@ -3,9 +3,6 @@ uvicorn
 langchain
 langchain-openai
 langchain-community
-langchain-text-splitters
-chromadb
-sentence-transformers
 python-dotenv
 pypdf
 cors
