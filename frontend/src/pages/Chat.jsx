@@ -62,9 +62,7 @@ export default function Chat() {
   const activeModel = models[modelIndex] || PRIMARY_MODEL;
 
   useEffect(() => {
-    if (!loading && !user && !DEMO_MODE) {
-      navigate('/login');
-    }
+    // Auth check removed to allow direct access
   }, [loading, user, navigate]);
 
   useEffect(() => {

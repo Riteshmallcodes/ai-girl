@@ -18,11 +18,11 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={user ? '/chat' : '/login'} replace />} />
-      <Route path="/chat" element={user ? <Chat /> : <Navigate to="/login" replace />} />
-      <Route path="/admin" element={user ? <Admin /> : <Navigate to="/login" replace />} />
-      <Route path="/login" element={user ? <Navigate to="/chat" replace /> : <Login />} />
-      <Route path="/signup" element={user ? <Navigate to="/chat" replace /> : <Signup />} />
+      <Route path="/" element={<Navigate to="/chat" replace />} />
+      <Route path="/chat" element={<Chat />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/login" element={<Navigate to="/chat" replace />} />
+      <Route path="/signup" element={<Navigate to="/chat" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
