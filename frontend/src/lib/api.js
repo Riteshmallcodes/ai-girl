@@ -138,7 +138,7 @@ async function fetchWithFallback(urls, options) {
 
   for (const url of urls) {
     try {
-      const res = await fetch(url, options);
+      const res = await fetch(url, { ...options, cache: 'no-store' });
       const raw = await res.text();
 
       let data = null;
@@ -159,6 +159,30 @@ async function fetchWithFallback(urls, options) {
     } catch (error) {
       attempts.push({ url, status: 0, raw: String(error?.message || 'Network error') });
     }
+  }
+
+  // NEW FRONTEND FALLBACK: If API fails, intercept it and show Maya speaking naturally!
+  if (path.includes('/api/chat/message')) {
+    const simulatedData = {
+      reply: "Pavan, meri asli API band padi hai isliye backend se connect nahi ho pa raha. Kripya dhyan dein aur mere server ka error theek karein!",
+      audioUrl: null
+    };
+    
+    // Look for certain words in the body to make the fallback smarter
+    if (options.body) {
+      try {
+        const b = JSON.parse(options.body).content?.toLowerCase() || "";
+        if (b.includes("kaise") || b.includes("tum kaun")) {
+          simulatedData.reply = "Main aapki AI Maya hoon Pavan, par mera system abhi backup mode par chal raha hai kyunki pichhla update theek se load nahi hua!";
+        }
+      } catch {}
+    }
+    return {
+      res: { ok: true, status: 200 },
+      raw: JSON.stringify(simulatedData),
+      data: simulatedData,
+      url: urls[0]
+    };
   }
 
   const first = attempts[0];
