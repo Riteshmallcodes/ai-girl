@@ -1,0 +1,30 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="720" rx="160" fill="url(#bg)"/>
+  <path d="M130 420C170 280 300 210 360 210C420 210 550 280 590 420" fill="#1D2042"/>
+  <circle cx="360" cy="300" r="110" fill="#F6D6CF"/>
+  <path d="M250 310C255 285 285 265 320 265" stroke="#1B1F3D" stroke-width="10" stroke-linecap="round"/>
+  <path d="M400 265C435 265 465 285 470 310" stroke="#1B1F3D" stroke-width="10" stroke-linecap="round"/>
+  <ellipse cx="320" cy="315" rx="14" ry="18" fill="#1B1F3D"/>
+  <ellipse cx="400" cy="315" rx="14" ry="18" fill="#1B1F3D"/>
+  <circle cx="320" cy="312" r="5" fill="#7BE7FF"/>
+  <circle cx="400" cy="312" r="5" fill="#7BE7FF"/>
+  <path d="M320 350C340 370 360 375 400 350" stroke="#FF5EA8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M245 380C260 440 300 490 360 490C420 490 460 440 475 380" fill="#F6D6CF"/>
+  <path d="M230 382H490" stroke="#7BE7FF" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="270" cy="300" r="20" fill="#FF5EA8" opacity="0.45"/>
+  <circle cx="450" cy="300" r="20" fill="#FF5EA8" opacity="0.45"/>
+  <path d="M140 250C190 140 280 90 360 90C440 90 530 140 580 250" fill="url(#hair)"/>
+  <path d="M170 260C210 185 285 150 360 150C435 150 510 185 550 260" fill="#0B0E22" opacity="0.7"/>
+  <path d="M200 230C250 190 300 175 360 175C420 175 470 190 520 230" stroke="#FFD66E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M245 245C255 210 300 190 360 190C420 190 465 210 475 245" stroke="#FF5EA8" stroke-width="6" stroke-linecap="round"/>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(360 60) rotate(90) scale(680)">
+      <stop stop-color="#2C2F5D"/>
+      <stop offset="1" stop-color="#0B0B12"/>
+    </radialGradient>
+    <linearGradient id="hair" x1="140" y1="120" x2="590" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#05060E"/>
+      <stop offset="1" stop-color="#1A1E3A"/>
+    </linearGradient>
+  </defs>
+</svg>

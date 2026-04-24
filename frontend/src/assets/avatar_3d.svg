@@ -1,0 +1,32 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="720" rx="160" fill="url(#bg)"/>
+  <circle cx="360" cy="300" r="125" fill="url(#skin)"/>
+  <path d="M155 420C200 300 300 230 360 230C420 230 520 300 565 420" fill="url(#dress)"/>
+  <path d="M135 250C190 135 285 85 360 85C435 85 530 135 585 250" fill="url(#hair)"/>
+  <path d="M200 275C230 220 290 190 360 190C430 190 490 220 520 275" fill="#0B0D1F" opacity="0.55"/>
+  <path d="M260 310C270 285 295 270 320 270" stroke="#2B2F59" stroke-width="12" stroke-linecap="round"/>
+  <path d="M400 270C425 270 450 285 460 310" stroke="#2B2F59" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="320" cy="315" r="12" fill="#2B2F59"/>
+  <circle cx="400" cy="315" r="12" fill="#2B2F59"/>
+  <path d="M320 355C340 375 360 380 400 355" stroke="#FF5EA8" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="285" cy="300" r="22" fill="#FF5EA8" opacity="0.35"/>
+  <circle cx="435" cy="300" r="22" fill="#FF5EA8" opacity="0.35"/>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(360 60) rotate(90) scale(680)">
+      <stop stop-color="#2B2F59"/>
+      <stop offset="1" stop-color="#0B0B12"/>
+    </radialGradient>
+    <linearGradient id="skin" x1="260" y1="220" x2="480" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD7C9"/>
+      <stop offset="1" stop-color="#F3BEB4"/>
+    </linearGradient>
+    <linearGradient id="dress" x1="160" y1="300" x2="560" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7BE7FF"/>
+      <stop offset="1" stop-color="#2B2F59"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="140" y1="120" x2="590" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B0B12"/>
+      <stop offset="1" stop-color="#1F2345"/>
+    </linearGradient>
+  </defs>
+</svg>

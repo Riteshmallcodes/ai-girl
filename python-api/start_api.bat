@@ -1,0 +1,6 @@
+@echo off
+echo Installing requirements (if missing)...
+pip install -r requirements.txt
+echo Starting RAG API Server...
+python main.py
+pause
