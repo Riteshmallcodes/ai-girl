@@ -431,84 +431,35 @@ export default function Chat() {
 
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRec();
-      recognition.lang = SR_LANG;
-      recognition.continuous = true; // Use continuous so we don't drop mid-sentence pauses
-      recognition.interimResults = true;
+      recognition.lang = SR_LANG || 'hi-IN';
+      // VERY IMPORTANT: continuous=false makes the browser natively detect silence and stop automatically!
+      recognition.continuous = false; 
+      recognition.interimResults = false;
       recognition.maxAlternatives = 1;
       
-      let interimText = '';
-      let resolved = false;
-      let silenceTimer = null;
-
-      // Global safety timeout
-      const globalTimeout = setTimeout(() => {
-        if (resolved) return;
-        resolved = true;
-        try { recognition.stop(); } catch {}
-        resolve(interimText.trim());
-      }, 18000);
-
-      const finishAndResolve = () => {
-        if (resolved) return;
-        resolved = true;
-        clearTimeout(globalTimeout);
-        if (silenceTimer) clearTimeout(silenceTimer);
-        try { recognition.stop(); } catch {}
-        resolve(interimText.trim());
-      };
+      let finalTranscript = '';
 
       recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = 0; i < event.results.length; i += 1) {
-          transcript += event.results[i][0].transcript;
-        }
-        interimText = transcript;
-
-        // Reset the silence debounce timer because they just spoke
-        if (silenceTimer) clearTimeout(silenceTimer);
-        // Wait exactly 2 seconds of silence before assuming they are done
-        silenceTimer = setTimeout(() => {
-          finishAndResolve();
-        }, 2200);
+        finalTranscript = event.results[0][0].transcript;
       };
 
       recognition.onerror = (event) => {
-        if (resolved) return;
-        
         if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-          resolved = true;
-          clearTimeout(globalTimeout);
           reject(new Error('Mic permission blocked. Allow microphone access in the browser.'));
-          return;
+        } else if (event.error === 'audio-capture') {
+          reject(new Error('No microphone found. Check sound input device.'));
         }
-        if (event.error === 'audio-capture') {
-          resolved = true;
-          clearTimeout(globalTimeout);
-          reject(new Error('No microphone found. Check Windows sound input device.'));
-          return;
-        }
-        // Ignore other temporary errors, let it keep flowing or let the silence timer finish
+        // Ignore 'no-speech', onend will safely resolve with empty string
       };
 
       recognition.onend = () => {
-        if (resolved) return;
-        
-        // Agar Chrome ne bina kuch sune hi mic band kar diya, to auto-restart karo!
-        if (!interimText.trim()) {
-            try { 
-                recognition.start(); 
-                return;
-            } catch (err) {}
-        }
-        
-        // If it ended naturally and we have text
-        finishAndResolve();
+        resolve(finalTranscript.trim());
       };
 
       try {
         recognition.start();
       } catch (err) {
-        finishAndResolve();
+        resolve("");
       }
     });
   }
