@@ -162,7 +162,7 @@ async function fetchWithFallback(urls, options) {
   }
 
   // NEW FRONTEND FALLBACK: If API fails, intercept it and show Maya speaking naturally!
-  if (path.includes('/api/chat/message')) {
+  if (urls && urls[0] && urls[0].includes('/api/chat/message')) {
     const simulatedData = {
       reply: "Pavan, meri asli API band padi hai isliye backend se connect nahi ho pa raha. Kripya dhyan dein aur mere server ka error theek karein!",
       audioUrl: null
